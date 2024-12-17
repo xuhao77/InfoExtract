@@ -1,0 +1,7 @@
+You are an expert in {dataset_theme}.
+Please read the following article and extract the following information to store in a JSON file for academic purposes.
+Strictly follow this form: {fields}.
+{article_mapping_to_instance}
+Use null to indicate unspecified information.
+Do not reply to unnecessary content.
+Article:###{article}###
