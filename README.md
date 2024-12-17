@@ -41,6 +41,7 @@ class UserInfo(CheckMixin, Checked):
     def check_user_name(self, v: str):
         """我只想要大写的用户名"""
         return v.upper()
+asyncio.run(build_task(task_config, UserInfo))
 ```
 
 SQL数据库截图
