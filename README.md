@@ -29,6 +29,20 @@ pip install -r requirements.txt
 3. 配置好`TaskConfig`，运行`build_task`
 
 ## Demo效果
+只需简单配置 即可开始信息提取
+```python
+class UserInfo(CheckMixin, Checked):
+    """'hobby' summarized from what he often does"""
+    user_name: str
+    age: int
+    hobby: list[str]
+
+    @filed_validator("user_name")
+    def check_user_name(self, v: str):
+        """我只想要大写的用户名"""
+        return v.upper()
+```
+
 SQL数据库截图
 ![img.png](img.png)
 
