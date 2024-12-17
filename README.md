@@ -14,7 +14,7 @@
 
 1. 支持异步，可从每分钟并发数、每分钟消耗的Token数、瞬时并发数三个维度控制并发
 2. 支持SQL数据库，自动创建表并添加数据
-3. 强大的JSON解析功能，通过定制元类，支持类型自动转换，支持添加自定义字段验证逻辑
+3. 强大的JSON解析功能，通过定制元类，支持类型自动转换，支持自定义字段验证逻辑
 4. 完善的日志系统
 5. 支持PDF与TXT格式解析，对于PDF论文，自动从正文中剔除References
 
@@ -41,6 +41,7 @@ class UserInfo(CheckMixin, Checked):
     def check_user_name(self, v: str):
         """我只想要大写的用户名"""
         return v.upper()
+        
 asyncio.run(build_task(task_config, UserInfo))
 ```
 
