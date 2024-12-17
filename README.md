@@ -51,4 +51,4 @@ UserInfo({'user_name': 'XU', 'age': 0, 'hobby': ['sing', 'dance', 'rap', 'basket
 UserInfo({'user_name': 'KUN', 'age': 0, 'hobby': ['sing', 'dance', 'rap', 'basketball']})
 ```
 
-`uncleared`的字段自动置空，`str`型与空值的`age`字段可以自动转换为`int`型，使用`,;`分隔的字符串会自动转换为列表
+`uncleared`的字段自动置空；`str`类型或空值的`age`字段可以自动转换为`int`型；使用`,;`分隔的字符串会自动转换为列表
