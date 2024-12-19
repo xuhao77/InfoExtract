@@ -1,21 +1,25 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Literal
+from typing import Callable, Literal, Any
+
+from core.extract_helper import ExtractResult
 
 
 @dataclass
 class TaskConfig:
-    input_file_type: Literal['pdf', 'txt']
-    dataset_dir_path: Path
-    dataset_name: str
-    dataset_theme: str
-    model: str = "qwen-plus"
-    post_check_func: Callable[[str], bool] = lambda _: True
-    one_article_to_many_instance: bool = False,
-    table_primary_key: str | None = None
-    extract_prompt_template_path: Path = Path(__file__).resolve().parent / "template/extract.txt"
-    repair_json_prompt_template_path: Path = Path(__file__).resolve().parent / "template/repair_json.txt"
-    log_dir_path: Path = Path("./log")
+    input_file_type: Literal['pdf', 'txt']  # 输入类型 可以为pdf或txt
+    dataset_dir_path: Path  # 数据集文件夹所在的文件夹路径
+    dataset_name: str  # 数据集文件夹名称
+    dataset_theme: str  # 数据集的主题
+    model: str = "qwen-plus"  # 模型名称 支持qwen-plus、qwen-turbo、qwen-max、glm-4
+    post_check_func: Callable[[str], bool] = lambda _: True  # 针对大模型的回复的检查函数 只有通过才进行下一步解析
+    one_article_to_many_instance: bool = False  # 一篇文章是否对应多个实例
+    table_primary_key: str | None = None  # 数据库主键 可以为file_path 该值由框架自动提供
+    filter_by_file_path: bool = False  # 是否根据文件路径过滤数据
+    post_processing_hooks: Callable[[list[ExtractResult]], Any] | None = None  # 针对提取结果的处理函数
+    extract_prompt_template_path: Path = Path(__file__).resolve().parent / "template/extract.txt"  # 提取模板路径
+    repair_json_prompt_template_path: Path = Path(__file__).resolve().parent / "template/repair_json.txt"  # 修复json的模板路径
+    log_dir_path: Path = Path("./log")  # 日志文件夹路径
 
     def __post_init__(self):
         if isinstance(self.dataset_dir_path, str):

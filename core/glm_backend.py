@@ -43,7 +43,7 @@ async def glm_extraction(file_name,
                     return ExtractResult(file_name=file_name, json_str=response.choices[0].message.content)
                 else:
                     return ExtractResult(request_success=False, file_name=file_name, file_content=file_content,
-                                         fail_message="Not got a json str")
+                                         fail_message="Not got a json str or post check failed")
             else:
                 # 姑且认为这里出现的异常不会影响其他请求
                 return ExtractResult(request_success=False, file_name=file_name, file_content=file_content,

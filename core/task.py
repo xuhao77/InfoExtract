@@ -32,6 +32,13 @@ def load_dir_txt(config: TaskConfig) -> list[tuple[str, str]]:
 
 
 async def build_task(config: TaskConfig, cls: Union[Type[Checked], Type[CheckMixin]]):
+    if config.one_article_to_many_instance and config.table_primary_key == "file_path":
+        raise ValueError("When one_article_to_many_instance is True, "
+                         "file_path should not be the primary key of the table")
+    if config.one_article_to_many_instance and config.filter_by_file_path:
+        print("Warning: one_article_to_many_instance and filter_by_file_path are both True, "
+              "this may cause some data to be lost")
+
     logger = init_logging(config.log_dir_path / f'{config.dataset_name}.log')
 
     logger.info(f"extract {cls.__name__} data")
@@ -73,14 +80,21 @@ async def build_task(config: TaskConfig, cls: Union[Type[Checked], Type[CheckMix
         raise ValueError(f"unsupported model {config.model}")
 
     cls_adapter = SQLAdapter(cls, DATABASE_URI, auto_create=True, primary_key=config.table_primary_key)
-    if config.one_article_to_many_instance and cls_adapter.check_file_path_is_primary_key():
-        raise ValueError("When one_article_to_many_instance is True, "
-                         "file_path should not be the primary key of the table")
+
+    if config.filter_by_file_path:
+        tmp_input_data = [(file_name, content) for file_name, content in input_data
+                          if not cls_adapter.check_exist(file_name)]
+        if len(tmp_input_data) != len(input_data):
+            logger.info(f"filter out {len(input_data) - len(tmp_input_data)} existing data")
+        input_data = tmp_input_data
 
     logger.info(f"start extract, total count = {len(input_data)}")
 
-    await parse_for_any_type(input_data, cls, extract_func, cls_adapter, config.one_article_to_many_instance)
+    result = await parse_for_any_type(input_data, cls, extract_func, cls_adapter, config.one_article_to_many_instance)
 
     timed_reqs_sem.cancel()
     flow_sem.cancel()
     instant_req_sem.cancel()
+
+    if config.post_processing_hooks:
+        config.post_processing_hooks(result)

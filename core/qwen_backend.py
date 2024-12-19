@@ -36,7 +36,7 @@ async def qwen_extraction(file_name: str,
                     return ExtractResult(request_success=False,
                                          file_name=file_name,
                                          file_content=file_content,
-                                         fail_message="Not got a json str or contains Chinese")
+                                         fail_message="Not got a json str or post check failed")
 
             elif response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
                 raise RuntimeError("Too many requests! Check the concurrency limit setting!")

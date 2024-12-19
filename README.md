@@ -41,12 +41,26 @@ class UserInfo(CheckMixin, Checked):
     def check_user_name(self, v: str):
         """我只想要大写的用户名"""
         return v.upper()
-        
+
+task_config = TaskConfig(
+    input_file_type="txt",  # 输入类型 可以为pdf或txt
+    dataset_dir_path=Path("./data"),  # 数据集文件夹所在的文件夹路径
+    dataset_name="user_info",  # 数据集文件夹名称
+    dataset_theme="user information",  # 数据集的主题
+    one_article_to_many_instance=True,  # 一篇文章可能有多个实例
+    table_primary_key="user_name",  # 指定用户名为主键
+    filter_by_file_path=True,  # 根据file_path过滤存在的数据
+    post_check_func=not_contains_chinese,  # 针对大模型的回复的检查函数: 不包含中文
+    post_processing_hooks=partial(save_to_excel,  # 针对提取结果的处理函数: 保存到excel
+                                  ignore_fields=[],
+                                  output_name="output.xlsx",
+                                  output_dir=Path("./output")),
+)
 asyncio.run(build_task(task_config, UserInfo))
 ```
 
 SQL数据库截图
-![img.png](img.png)
+![img_2.png](img_2.png)
 
 日志截图
 ![img_1.png](img_1.png)
@@ -68,3 +82,17 @@ UserInfo({'user_name': 'KUN', 'age': 0, 'hobby': ['sing', 'dance', 'rap', 'baske
 ```
 
 `uncleared`的字段自动置空；`str`类型或空值的`age`字段可以自动转换为`int`型；使用`,;`分隔的字符串会自动转换为列表
+
+## 从数据库重建类实例
+无需编写SQL语句 自动从数据库记录重建实例
+```python
+user_adapter = SQLAdapter(UserInfo, DATABASE_URI)
+for file_path, item in user_adapter.fetch_all():
+    print(file_path, item)
+```
+效果如下
+```shell
+data/user_info/2.txt UserInfo({'user_name': 'LEON', 'age': 0, 'hobby': ['watching TV', 'coding']})
+data/user_info/1.txt UserInfo({'user_name': 'XU HAO', 'age': 20, 'hobby': ['singing', 'dancing', 'rapping']})
+data/user_info/1.txt UserInfo({'user_name': 'CAI', 'age': 30, 'hobby': ['basketball', 'mentoring']})
+```

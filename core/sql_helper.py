@@ -1,5 +1,8 @@
 import sqlite3
 from itertools import chain
+from typing import Union
+
+from core.checked import CheckMixin, Checked
 
 SQL_TYPES_MAPPING = {
     int: 'INTEGER',
@@ -41,7 +44,7 @@ class SQLAdapter:
         cur.execute(create_command)
         self.conn.commit()
 
-    def add_item(self, file_path, item):
+    def add_item(self, file_path, item: Union[CheckMixin, Checked]):
         if not isinstance(item, self.cls):
             raise ValueError(f"item must be an instance of {self.cls.__name__}")
         cur = self.conn.cursor()
@@ -59,14 +62,10 @@ class SQLAdapter:
         for e in query_result:
             yield e[-1], self.cls.sql_converter(*e[:-1])
 
-    def check_file_path_is_primary_key(self):
-        # 判断file_path是否为表的主键
+    def check_exist(self, file_path_value):
         cur = self.conn.cursor()
-        cur.execute(f"PRAGMA table_info({self.table_name})")
-        table_info = cur.fetchall()
-        for e in table_info:
-            if e[1] == "file_path" and e[5] == 1:
-                return True
+        cur.execute(f"SELECT * FROM {self.table_name} WHERE file_path=?", (file_path_value,))
+        return cur.fetchone() is not None
 
     def __del__(self):
         self.conn.commit()

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from types import MappingProxyType
 import re
 import json
-from typing import Generator
+from typing import Generator, Union
 
 
 def filed_validator(field_name):
@@ -178,7 +178,7 @@ class CheckMixin:
         return set(cls._fields)
 
     @classmethod
-    def parse_json(cls, json_str: str, one_to_many: bool = False) -> Generator[tuple[dict, list, list], None, None]:
+    def parse_json(cls, json_str: str, one_to_many: bool = False) -> Generator[tuple[Union['CheckMixin',Checked], list, list], None, None]:
         """
         解析json
         :param one_to_many: 是否一个文章对应多个实例
