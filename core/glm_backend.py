@@ -1,9 +1,9 @@
 import asyncio
 
 from zhipuai import ZhipuAI
-from core.config import ZHIPUAI_API_KEY
-from core.custom_semaphore import TimedReqsSemaphore
-from core.extract_helper import _is_got_json_str, ExtractResult
+from .config import ZHIPUAI_API_KEY
+from .custom_semaphore import TimedReqsSemaphore
+from .extract_helper import _is_got_json_str, ExtractResult
 
 client = ZhipuAI(api_key=ZHIPUAI_API_KEY)
 

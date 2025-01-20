@@ -2,7 +2,7 @@ import sqlite3
 from itertools import chain
 from typing import Union
 
-from core.checked import CheckMixin, Checked
+from .checked import CheckMixin, Checked
 
 SQL_TYPES_MAPPING = {
     int: 'INTEGER',

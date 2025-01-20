@@ -3,9 +3,9 @@ import logging
 import platform
 from typing import Callable, Awaitable, Union, Type
 
-from core.checked import CheckMixin, Checked
-from core.extract_helper import ExtractResult
-from core.sql_helper import SQLAdapter
+from .checked import CheckMixin, Checked
+from .extract_helper import ExtractResult
+from .sql_helper import SQLAdapter
 
 if platform.system() == 'Windows':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())

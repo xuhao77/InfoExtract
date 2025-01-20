@@ -1,14 +1,14 @@
 from functools import partial
 from typing import Union, Type
 
-from core.chat_bot_limit import CHAT_MODEL_LIMIT
-from core.checked import Checked, CheckMixin
-from core.custom_semaphore import TimedReqsSemaphore, FlowSemaphore
-from core.logger import init_logging
-from core.sql_helper import SQLAdapter
-from core.task_config import TaskConfig
-from core.config import DATABASE_URI
-from core.async_extract import parse_for_any_type
+from .chat_bot_limit import CHAT_MODEL_LIMIT
+from .checked import Checked, CheckMixin
+from .custom_semaphore import TimedReqsSemaphore, FlowSemaphore
+from .logger import init_logging
+from .sql_helper import SQLAdapter
+from .task_config import TaskConfig
+from .config import DATABASE_URI
+from .async_extract import parse_for_any_type
 
 
 def get_extract_prompt_template(config: TaskConfig, cls):
@@ -57,7 +57,7 @@ async def build_task(config: TaskConfig, cls: Union[Type[Checked], Type[CheckMix
 
     match config.input_file_type:
         case "pdf":
-            from core.pdf2txt import parse_pdf
+            from .pdf2txt import parse_pdf
             input_data = [(e.path, e.txt) for e in parse_pdf(config)]
         case "txt":
             input_data = load_dir_txt(config)
@@ -65,13 +65,13 @@ async def build_task(config: TaskConfig, cls: Union[Type[Checked], Type[CheckMix
             raise ValueError(f"unsupported input file type {config.input_file_type}")
 
     if config.model.startswith("qwen"):
-        from core.qwen_backend import qwen_extraction
+        from .qwen_backend import qwen_extraction
         extract_func = partial(qwen_extraction,
                                timed_reqs_sem=timed_reqs_sem, flow_sem=flow_sem, instant_sem=instant_req_sem,
                                extract_model=config.model, extract_prompt=prompt_template,
                                post_check_func=config.post_check_func)
     elif config.model.startswith("glm"):
-        from core.glm_backend import glm_extraction
+        from .glm_backend import glm_extraction
         extract_func = partial(glm_extraction,
                                timed_reqs_sem=timed_reqs_sem, instant_sem=instant_req_sem,
                                extract_model=config.model, extract_prompt=prompt_template,

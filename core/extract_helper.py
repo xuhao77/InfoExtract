@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Union
 
-from core.checked import Checked, CheckMixin
+from .checked import Checked, CheckMixin
 
 CHINESE_PATTERN = re.compile(r'[\u4e00-\u9fff]')
 

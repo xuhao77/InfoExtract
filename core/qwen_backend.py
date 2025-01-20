@@ -4,9 +4,9 @@ from typing import Awaitable
 import dashscope
 from dashscope.aigc.generation import AioGeneration
 
-from core.custom_semaphore import TimedReqsSemaphore, FlowSemaphore
-from core.extract_helper import ExtractResult, _is_got_json_str
-from core.config import DASHSCOPE_API_KEY
+from .custom_semaphore import TimedReqsSemaphore, FlowSemaphore
+from .extract_helper import ExtractResult, _is_got_json_str
+from .config import DASHSCOPE_API_KEY
 
 dashscope.api_key = DASHSCOPE_API_KEY
 

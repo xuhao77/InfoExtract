@@ -6,8 +6,8 @@ from typing import NamedTuple, List
 import re
 
 import PyPDF2
-from core.logger import init_logging
-from core.task_config import TaskConfig
+from .logger import init_logging
+from .task_config import TaskConfig
 
 
 class PDF2TXTResult(NamedTuple):

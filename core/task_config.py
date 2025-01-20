@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Literal, Any
 
-from core.extract_helper import ExtractResult
+from .extract_helper import ExtractResult
 
 
 @dataclass
