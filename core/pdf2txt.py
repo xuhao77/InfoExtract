@@ -69,6 +69,9 @@ def parse_pdf(config: TaskConfig) -> list[PDF2TXTResult]:
         else:
             logger.error(f"file_path={e.exception().args[0]},message={e.exception().args[1]}")
 
+    if not config.dataset_output_path.exists():
+        config.dataset_output_path.mkdir(parents=True, exist_ok=True)
+
     with open(config.dataset_output_path / "pdf2txt.pkl", 'wb') as file:
         pickle.dump(result, file)
 
