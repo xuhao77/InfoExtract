@@ -25,7 +25,7 @@ pip install -r requirements.txt
 ```
 
 ## 使用
-1. 在 core/config.py 中配置数据库与 API_KEY ，申请地址：[DashScope](https://dashscope.aliyun.com/) [GLM](https://open.bigmodel.cn/dev/api/normal-model/glm-4)
+1. 在 core/config.py 中配置数据库与 API_KEY ，申请地址：[DashScope](https://dashscope.aliyun.com/) [GLM](https://open.bigmodel.cn/dev/api/normal-model/glm-4) [DeepSeek](https://api-docs.deepseek.com/zh-cn/)
 2. 定义好待提取信息的类，须继承自`CheckMixin`与`Checked`，须提供类型注解，文档注释（将成为提示词的一部分）以及针对字段的验证函数是可选的，像demo.py那样
 3. 配置好`TaskConfig`，运行`build_task`
 
@@ -47,7 +47,7 @@ task_config = TaskConfig(
     input_file_type="txt",  # 输入类型 可以为pdf或txt
     dataset_dir_path=Path("./data"),  # 数据集文件夹所在的文件夹路径
     dataset_name="user_info",  # 数据集文件夹名称
-    dataset_theme="user information",  # 数据集的主题
+    dataset_theme="user",  # 数据集的主题
     one_article_to_many_instance=True,  # 一篇文章可能有多个实例
     table_primary_key="user_name",  # 指定用户名为主键
     filter_by_file_path=True,  # 根据file_path过滤存在的数据
