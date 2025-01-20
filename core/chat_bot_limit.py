@@ -14,7 +14,9 @@ CHAT_MODEL_LIMIT = {
     "qwen-plus": RequestLimit(500, 1300000, 30000, 20),
     "qwen-max": RequestLimit(60, 100000, 6000, 40),
 
-    "glm-4": RequestLimit(10, 10 ** 8, 30000, 5),
+    "glm-4": RequestLimit(10, 10 ** 8, 30000, 2),
 
-    "ernie-speed-128k": RequestLimit(60, 300000, 128000, 1)
+    "ernie-speed-128k": RequestLimit(60, 300000, 128000, 1),
+
+    "deepseek-chat":RequestLimit(1000,10**8,64*1024,100)
 }

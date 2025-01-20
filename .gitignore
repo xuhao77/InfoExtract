@@ -1,2 +1,5 @@
 /test.db
 .idea
+/log
+/output
+/core/config.py

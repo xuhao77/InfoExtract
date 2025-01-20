@@ -76,6 +76,13 @@ async def build_task(config: TaskConfig, cls: Union[Type[Checked], Type[CheckMix
                                timed_reqs_sem=timed_reqs_sem, instant_sem=instant_req_sem,
                                extract_model=config.model, extract_prompt=prompt_template,
                                post_check_func=config.post_check_func)
+    elif config.model.startswith("deepseek"):
+        from .openai_backend import openai_extraction
+        extract_func = partial(openai_extraction,
+                               timed_reqs_sem=timed_reqs_sem, flow_sem=flow_sem, instant_sem=instant_req_sem,
+                               extract_model=config.model, extract_prompt=prompt_template,
+                               post_check_func=config.post_check_func
+                               )
     else:
         raise ValueError(f"unsupported model {config.model}")
 
@@ -85,7 +92,16 @@ async def build_task(config: TaskConfig, cls: Union[Type[Checked], Type[CheckMix
         tmp_input_data = [(file_name, content) for file_name, content in input_data
                           if not cls_adapter.check_exist(file_name)]
         if len(tmp_input_data) != len(input_data):
-            logger.info(f"filter out {len(input_data) - len(tmp_input_data)} existing data")
+            logger.info(f"filter out {len(input_data) - len(tmp_input_data)} existing data in filter_by_file_path")
+        input_data = tmp_input_data
+
+    if config.filter_hooks:
+        tmp_input_data = [(file_name, content) for file_name, content in input_data if
+                          all(func(file_name) for func in config.filter_hooks)]
+        if len(tmp_input_data) != len(input_data):
+            logger.info(
+                f"filter out {len(input_data) - len(tmp_input_data)} existing data in {','.join([func.__name__ for func in config.filter_hooks])}")
+
         input_data = tmp_input_data
 
     logger.info(f"start extract, total count = {len(input_data)}")
@@ -96,5 +112,5 @@ async def build_task(config: TaskConfig, cls: Union[Type[Checked], Type[CheckMix
     flow_sem.cancel()
     instant_req_sem.cancel()
 
-    if config.post_processing_hooks:
-        config.post_processing_hooks(result)
+    if config.post_processing_hook:
+        config.post_processing_hook(result)

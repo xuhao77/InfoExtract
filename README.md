@@ -4,6 +4,7 @@
 ![Static Badge](https://img.shields.io/badge/sqlite-green)
 ![Static Badge](https://img.shields.io/badge/Qwen-blue)
 ![Static Badge](https://img.shields.io/badge/GLM-blue)
+![Static Badge](https://img.shields.io/badge/DeepSeek-blue)
 ![GitHub License](https://img.shields.io/github/license/mashape/apistatus)
 
 # 基于大模型的信息提取框架
