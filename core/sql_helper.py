@@ -39,7 +39,7 @@ class SQLAdapter:
         if primary_key is not None:
             create_command = f'CREATE TABLE {self.table_name}({field_type_list}, PRIMARY KEY({primary_key}))'
         else:
-            create_command = f'CREATE TABLE {self.table_name}({field_type_list})'
+            create_command = f'CREATE TABLE {self.table_name}(id INTEGER PRIMARY KEY AUTOINCREMENT, {field_type_list})'
 
         cur.execute(create_command)
         self.conn.commit()
@@ -48,7 +48,7 @@ class SQLAdapter:
         if not isinstance(item, self.cls):
             raise ValueError(f"item must be an instance of {self.cls.__name__}")
         cur = self.conn.cursor()
-        cur.execute(f'INSERT INTO {self.table_name} VALUES ({",".join("?" for _ in range(len(self.fields) + 1))})',
+        cur.execute(f'INSERT INTO {self.table_name}({",".join(self.fields)}, file_path) VALUES ({",".join("?" for _ in range(len(self.fields) + 1))})',
                     (*item.sql_adapter(), file_path))
 
     def commit(self):
@@ -57,7 +57,7 @@ class SQLAdapter:
     def fetch_all(self):
         # 返回一个产生cls实例的生成器
         cur = self.conn.cursor()
-        cur.execute(f"SELECT * FROM {self.table_name}")
+        cur.execute(f'SELECT {",".join(self.fields)}, file_path FROM {self.table_name}')
         query_result = cur.fetchall()
         for e in query_result:
             yield e[-1], self.cls.sql_converter(*e[:-1])

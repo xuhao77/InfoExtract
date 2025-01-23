@@ -30,7 +30,8 @@ task_config = TaskConfig(
     dataset_name="user_info",  # 数据集文件夹名称
     dataset_theme="user",  # 数据集的主题
     one_article_to_many_instance=True,  # 一篇文章可能有多个实例
-    table_primary_key="user_name",  # 指定用户名为主键
+    # table_primary_key="user_name",  # 指定用户名为主键 默认使用自增id为主键
+    # 一篇文章对应多个实例时 不可以将file_path作为主键 这会导致冲突
     filter_by_file_path=True,  # 根据file_path过滤存在的数据
     filter_hooks=[my_filter],
     post_check_func=not_contains_chinese,  # 针对大模型的回复的检查函数: 不包含中文
@@ -39,9 +40,6 @@ task_config = TaskConfig(
                                  output_name="output.xlsx",
                                  output_dir=Path("./output"))
 )
-
-# TaskConfig中还可以指定数据库主键
-# 但要注意 一篇文章对应多个实例时 不可以将file_path作为主键 这会导致冲突
 
 if __name__ == '__main__':
     # 提取
