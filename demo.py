@@ -2,7 +2,7 @@ import asyncio
 from functools import partial
 from pathlib import Path
 
-from core import CheckMixin, Checked, filed_validator, DATABASE_URI, not_contains_chinese, save_to_excel, SQLAdapter, \
+from core import CheckMixin, Checked, filed_validator,  not_contains_chinese, save_to_excel, SQLAdapter, \
     TaskConfig, build_task
 
 
@@ -45,6 +45,6 @@ if __name__ == '__main__':
     # 提取
     asyncio.run(build_task(task_config, UserInfo))
     ## 读取
-    # user_adapter = SQLAdapter(UserInfo, DATABASE_URI)
+    # user_adapter = SQLAdapter(UserInfo, "temp.db")
     # for file_path, item in user_adapter.fetch_all():
     #     print(file_path, item)

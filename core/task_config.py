@@ -20,7 +20,9 @@ class TaskConfig:
     post_processing_hook: Callable[[list[ExtractResult]], Any] | None = None  # 针对提取结果的处理函数
     extract_prompt_template_path: Path = Path(__file__).resolve().parent / "template/extract.txt"  # 提取模板路径
     repair_json_prompt_template_path: Path = Path(__file__).resolve().parent / "template/repair_json.txt"  # 修复json的模板路径
+    pdf_content_type:Literal['first_page_txt','txt','ref_txt'] = 'txt' # 仅对pdf输入有效 first_page_txt常用于提取pdf的作者等信息
     log_dir_path: Path = Path("./log")  # 日志文件夹路径
+    database_path:str = "temp.db" # 数据库路径
 
     def __post_init__(self):
         if isinstance(self.dataset_dir_path, str):

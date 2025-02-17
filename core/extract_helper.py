@@ -30,6 +30,7 @@ def not_contains_chinese(text):
     match = CHINESE_PATTERN.search(text)
     return match is None
 
+
 def format_excel(path):
     from openpyxl import load_workbook
 
@@ -58,6 +59,7 @@ def format_excel(path):
     # 保存更改
     workbook.save(filename=file_path)
 
+
 def save_to_excel(result: list[ExtractResult], ignore_fields: list[str], output_name: str, output_dir: Path):
     import pandas as pd
     if not output_dir.exists():
@@ -72,3 +74,28 @@ def save_to_excel(result: list[ExtractResult], ignore_fields: list[str], output_
     df = df.drop(columns=ignore_fields, axis=1)
     df.to_excel(output_path, index=False)
     format_excel(output_path)
+
+
+dash_characters = {
+    "Hyphen-Minus": (u"-", ord("-")),  # U+002D
+    "Hyphen": (u"‐", ord("‐")),  # U+2010
+    "Non-Breaking Hyphen": (u"‑", ord("‑")),  # U+2011
+    "En Dash": (u"–", ord("–")),  # U+2013
+    "Em Dash": (u"—", ord("—")),  # U+2014
+    "Horizontal Bar": (u"―", ord("―")),  # U+2015
+    "Figure Dash": (u"‒", ord("‒")),  # U+2012
+    "Minus Sign": (u"−", ord("−"))  # U+2212
+}
+
+# def replace_dash_characters(s: str) -> str:
+#     # 将文本中的破折号替换为普通的连字符
+#     for _, v in dash_characters.items():
+#         s = s.replace(v[0], "-")
+#     return s
+
+# 创建一个正则表达式模式，用来匹配所有需要替换的字符
+DASH_PATTERN = "|".join(re.escape(char[0]) for char in dash_characters.values())
+
+def replace_dash_characters(s: str) -> str:
+    # 使用正则表达式替换所有匹配的字符为连字符
+    return re.sub(DASH_PATTERN, "-", s)

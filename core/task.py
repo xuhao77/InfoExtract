@@ -1,3 +1,4 @@
+import pickle
 from functools import partial
 from typing import Union, Type
 
@@ -7,7 +8,6 @@ from .custom_semaphore import TimedReqsSemaphore, FlowSemaphore
 from .logger import init_logging
 from .sql_helper import SQLAdapter
 from .task_config import TaskConfig
-from .config import DATABASE_URI
 from .async_extract import parse_for_any_type
 
 
@@ -58,7 +58,11 @@ async def build_task(config: TaskConfig, cls: Union[Type[Checked], Type[CheckMix
     match config.input_file_type:
         case "pdf":
             from .pdf2txt import parse_pdf
-            input_data = [(e.path, e.txt) for e in parse_pdf(config)]
+            if (config.dataset_output_path/"pdf2txt.pkl").exists():
+                with open(config.dataset_output_path / "pdf2txt.pkl", 'rb') as file:
+                    input_data = [(e.path, getattr(e,config.pdf_content_type)) for e in pickle.load(file)]
+            else:
+                input_data = [(e.path, getattr(e,config.pdf_content_type)) for e in parse_pdf(config)]
         case "txt":
             input_data = load_dir_txt(config)
         case _:
@@ -86,7 +90,7 @@ async def build_task(config: TaskConfig, cls: Union[Type[Checked], Type[CheckMix
     else:
         raise ValueError(f"unsupported model {config.model}")
 
-    cls_adapter = SQLAdapter(cls, DATABASE_URI, auto_create=True, primary_key=config.table_primary_key)
+    cls_adapter = SQLAdapter(cls, config.database_path, auto_create=True, primary_key=config.table_primary_key)
 
     if config.filter_by_file_path:
         tmp_input_data = [(file_name, content) for file_name, content in input_data
